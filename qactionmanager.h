@@ -70,6 +70,13 @@ public:
         QString name = m_nameByValue[value];
         return m_actionByName[name];
     }
+
+    QString getNameByValue(const Value& value) {
+        if(!m_nameByValue.contains(value))
+            return "";
+        return m_nameByValue[value];
+    }
+
     bool markCollisions(const QString& name, Key key)
     {
         if(!m_actionByName.contains(name))
