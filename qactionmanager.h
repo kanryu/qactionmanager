@@ -56,7 +56,8 @@ public:
         m_keyByNameDefaults[name] = key;
         m_keyByName[name] = key;
         for(int i = 0; i < key.count(); i++) {
-            m_nameByValue[Value(key[i])] = name;
+            QString keystring = valueToString(key[i]);
+            m_nameByValue[keystring] = name;
         }
     }
 
@@ -64,17 +65,19 @@ public:
     QMap<QString, Key>& keyMaps() { return m_keyByName; }
     Key getKey(const QString& name) { return m_keyByName.contains(name) ? m_keyByName[name] : Key(); }
     Key getKeyDefault(const QString& name) { return m_keyByNameDefaults.contains(name) ? m_keyByNameDefaults[name] : Key(); }
-    Action getActionByKey(const Value& value) {
-        if(!m_nameByValue.contains(value))
+    Action getActionByKey(Value& value) {
+        QString keystring = valueToString(value);
+        if(!m_nameByValue.contains(keystring))
             return Action();
-        QString name = m_nameByValue[value];
+        QString name = m_nameByValue[keystring];
         return m_actionByName[name];
     }
 
-    QString getNameByValue(const Value& value) {
-        if(!m_nameByValue.contains(value))
+    QString getNameByValue(Value& value) {
+        QString keystring = valueToString(value);
+        if(!m_nameByValue.contains(keystring))
             return "";
-        return m_nameByValue[value];
+        return m_nameByValue[keystring];
     }
 
     bool markCollisions(const QString& name, Key key)
@@ -82,13 +85,22 @@ public:
         if(!m_actionByName.contains(name))
             return true;
         for(int i = 0; i < key.count(); i++) {
-            if(!m_nameByValue.contains(key[i]))
+            QString keystring = valueToString(key[i]);
+            if(!m_nameByValue.contains(keystring))
                 continue;
-            QString nm = m_nameByValue[key[i]];
+            QString nm = m_nameByValue[keystring];
             if(nm != name)
                 return true;
         }
         return false;
+    }
+    QString valueToString(int key)
+    {
+        return Value(key).toString();
+    }
+    QString valueToString(Value value)
+    {
+        return value.toString();
     }
 
     void updateKey(const QString& name, Key key, bool force=false) {
@@ -96,23 +108,29 @@ public:
             return;
         Key old = m_keyByName[name];
         for(int i = 0; i < old.count(); i++) {
-            m_nameByValue.remove(Value(old[i]));
+            QString keystring = valueToString(old[i]);
+            m_nameByValue.remove(keystring);
         }
         m_keyByName[name] = key;
         for(int i = 0; i < key.count(); i++) {
-            m_nameByValue[Value(key[i])] = name;
+            QString keystring = valueToString(key[i]);
+            m_nameByValue[keystring] = name;
         }
     }
     void resetByDefault() {
-        m_keyByName.clear();
-        m_nameByValue.clear();
+        clear();
         foreach(const QString& name, m_keyByNameDefaults.keys()) {
             Key key = m_keyByNameDefaults[name];
             m_keyByName[name] = key;
             for(int i = 0; i < key.count(); i++) {
-                m_nameByValue[Value(key[i])] = name;
+                QString keystring = valueToString(key[i]);
+                m_nameByValue[keystring] = name;
             }
         }
+    }
+    void clear() {
+        m_keyByName.clear();
+        m_nameByValue.clear();
     }
 
 private:
@@ -120,7 +138,7 @@ private:
     QMultiMap<QString, QString> m_nameByGroup;
     QMap<QString, Key> m_keyByName;
     QMap<QString, Key> m_keyByNameDefaults;
-    QMap<Value, QString> m_nameByValue;
+    QMap<QString, QString> m_nameByValue;
 };
 
 #endif // QACTIONMANAGER_H
