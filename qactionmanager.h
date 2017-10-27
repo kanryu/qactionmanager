@@ -109,7 +109,8 @@ public:
         Key old = m_keyByName[name];
         for(int i = 0; i < old.count(); i++) {
             QString keystring = valueToString(old[i]);
-            m_nameByValue.remove(keystring);
+            if(m_nameByValue[keystring] == name)
+                m_nameByValue.remove(keystring);
         }
         m_keyByName[name] = key;
         for(int i = 0; i < key.count(); i++) {
