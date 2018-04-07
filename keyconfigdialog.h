@@ -43,6 +43,7 @@ private:
     Ui::KeyConfigDialog *ui;
     QString m_actionName;
     KeyActionManager m_keyActions;
+    QMap<QString, QString> m_actionNameByIconText;
     bool m_ignoreEdited;
     bool m_keyCapturing;
 };

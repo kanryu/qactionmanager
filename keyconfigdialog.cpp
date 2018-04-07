@@ -184,10 +184,13 @@ KeyConfigDialog::KeyConfigDialog(KeyConfigDialog::KeyActionManager &keyActions, 
 
     ui->treeWidget->sortByColumn(0, Qt::AscendingOrder);
     QTreeWidgetItem *header = ui->treeWidget->headerItem();
-    header->setText(0, tr("Motions", "Title of the column of Action to be registered with the shortcut key"));
+//    header->setText(0, tr("Motions", "Title of the column of Action to be registered with the shortcut key"));
+    header->setText(0, tr("Group", "Group of the Action to be registered with the shortcut key"));
     header->setText(1, tr("Description", "Title of the column that displays the meaning of the action to be registered with the shortcut key"));
     header->setText(2, tr("CurrentShortcut", "Title of the column of the content of the shortcut key registered for Action"));
-
+//    header->setSizeHint(0, QSize(100, 30));
+//    header->setSizeHint(1, QSize(300, 30));
+//    header->setSizeHint(2, QSize(300, 30));
     resetView();
 }
 
@@ -195,18 +198,34 @@ KeyConfigDialog::KeyConfigDialog(KeyConfigDialog::KeyActionManager &keyActions, 
 void KeyConfigDialog::resetView()
 {
     ui->treeWidget->clear();
+    m_actionNameByIconText.clear();
     QMap<QString, QAction*>& actions = m_keyActions.actions();
     QMap<QString, QKeySequence>& keyconfigs = m_keyActions.keyMaps();
-    foreach(const QString& key, actions.keys()) {
-        QAction* action = actions[key];
-        if(!action) continue;
-        QTreeWidgetItem* item = new QTreeWidgetItem;
-        item->setText(0, key);
-        item->setText(1, action->iconText());
-        item->setText(2, keyconfigs.contains(key) ? keyconfigs[key].toString() : "");
-//        item->setSizeHint(0, QSize(240, 20));
-//        item->setSizeHint(1, QSize(240, 20));
-        ui->treeWidget->addTopLevelItem(item);
+//    foreach(const QString& key, actions.keys()) {
+//        QAction* action = actions[key];
+//        if(!action) continue;
+//        QTreeWidgetItem* item = new QTreeWidgetItem;
+//        item->setText(0, key);
+//        item->setText(1, action->iconText());
+//        item->setText(2, keyconfigs.contains(key) ? keyconfigs[key].toString() : "");
+////        item->setSizeHint(0, QSize(240, 20));
+////        item->setSizeHint(1, QSize(240, 20));
+//        ui->treeWidget->addTopLevelItem(item);
+//    }
+    const QMultiMap<QString, QString>& nameByGroups = m_keyActions.nameByGroups();
+    foreach(const QString& groupName, nameByGroups.uniqueKeys()) {
+        foreach(const QString& key, nameByGroups.values(groupName)) {
+            QAction* action = actions[key];
+            if(!action) continue;
+            QTreeWidgetItem* item = new QTreeWidgetItem;
+            item->setText(0, groupName);
+            item->setText(1, action->iconText());
+            item->setText(2, keyconfigs.contains(key) ? keyconfigs[key].toString() : "");
+//            item->setSizeHint(0, QSize(240, 20));
+//            item->setSizeHint(1, QSize(300, 20));
+            ui->treeWidget->addTopLevelItem(item);
+            m_actionNameByIconText[action->iconText()] = key;
+        }
     }
 }
 
@@ -232,7 +251,8 @@ void KeyConfigDialog::onTreeWidget_currentItemChanged(QTreeWidgetItem *item, QTr
 {
     //qDebug() << "on_currentCommandChanged: " << (item ? item->text(0):"nullptr") << (previous ? previous->text(0) :"nullptr");
     if(item) {
-        m_actionName = item->text(0);
+//        m_actionName = item->text(0);
+        m_actionName = m_actionNameByIconText[item->text(1)];
         ui->shortcutGroupBox->setEnabled(true);
         ui->shortcutEdit->setText(item->text(2));
     }

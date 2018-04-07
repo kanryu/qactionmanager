@@ -27,11 +27,13 @@ public:
         , m_keyByName(rhs.m_keyByName)
         , m_keyByNameDefaults(rhs.m_keyByNameDefaults)
         , m_nameByValue(rhs.m_nameByValue)
+        , m_nameByGroup(rhs.m_nameByGroup)
     {
         m_actionByName.detach();
         m_keyByName.detach();
         m_keyByNameDefaults.detach();
         m_nameByValue.detach();
+        m_nameByGroup.detach();
     }
 
     void operator=(QActionManager& rhs)
@@ -40,6 +42,7 @@ public:
         m_keyByName = rhs.m_keyByName;
         m_keyByNameDefaults = rhs.m_keyByNameDefaults;
         m_nameByValue = rhs.m_nameByValue;
+        m_nameByGroup = rhs.m_nameByGroup;
     }
     void registAction(QString name, Action& action, QString group)
     {
@@ -60,7 +63,7 @@ public:
             m_nameByValue[keystring] = name;
         }
     }
-
+    QMultiMap<QString, QString>& nameByGroups() { return m_nameByGroup; }
     QMap<QString, Action>& actions() { return m_actionByName; }
     QMap<QString, Key>& keyMaps() { return m_keyByName; }
     Key getKey(const QString& name) { return m_keyByName.contains(name) ? m_keyByName[name] : Key(); }

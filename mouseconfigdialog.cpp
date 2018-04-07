@@ -47,7 +47,8 @@ MouseConfigDialog::MouseConfigDialog(MouseConfigDialog::MouseActionManager &mous
 
     ui->treeWidget->sortByColumn(0, Qt::AscendingOrder);
     QTreeWidgetItem *header = ui->treeWidget->headerItem();
-    header->setText(0, tr("Motions", "Title of the column of Action to be registered with the mouse sequence"));
+//    header->setText(0, tr("Motions", "Title of the column of Action to be registered with the mouse sequence"));
+    header->setText(0, tr("Group", "Group of the Action to be registered with the shortcut key"));
     header->setText(1, tr("Description", "Title of the column that displays the meaning of the action to be registered with the mouse sequence"));
     header->setText(2, tr("Current Mouse Sequence", "Title of the column of the content of the mouse sequence registered for Action"));
 
@@ -57,20 +58,35 @@ MouseConfigDialog::MouseConfigDialog(MouseConfigDialog::MouseActionManager &mous
 void MouseConfigDialog::resetView()
 {
     ui->treeWidget->clear();
+    m_actionNameByIconText.clear();
     QMap<QString, QAction*>& actions = m_mouseActions.actions();
     QMap<QString, QMouseSequence>& mouseconfigs = m_mouseActions.keyMaps();
-    foreach(const QString& key, actions.keys()) {
-        QAction* action = actions[key];
-        if(!action) continue;
-        QTreeWidgetItem* item = new QTreeWidgetItem;
-        item->setText(0, key);
-        item->setText(1, action->iconText());
-        item->setText(2, mouseconfigs.contains(key) ? mouseconfigs[key].toString() : "");
-//        item->setSizeHint(0, QSize(240, 20));
-//        item->setSizeHint(1, QSize(240, 20));
-        ui->treeWidget->addTopLevelItem(item);
+//    foreach(const QString& key, actions.keys()) {
+//        QAction* action = actions[key];
+//        if(!action) continue;
+//        QTreeWidgetItem* item = new QTreeWidgetItem;
+//        item->setText(0, key);
+//        item->setText(1, action->iconText());
+//        item->setText(2, mouseconfigs.contains(key) ? mouseconfigs[key].toString() : "");
+////        item->setSizeHint(0, QSize(240, 20));
+////        item->setSizeHint(1, QSize(240, 20));
+//        ui->treeWidget->addTopLevelItem(item);
+//    }
+    const QMultiMap<QString, QString>& nameByGroups = m_mouseActions.nameByGroups();
+    foreach(const QString& groupName, nameByGroups.uniqueKeys()) {
+        foreach(const QString& key, nameByGroups.values(groupName)) {
+            QAction* action = actions[key];
+            if(!action) continue;
+            QTreeWidgetItem* item = new QTreeWidgetItem;
+            item->setText(0, groupName);
+            item->setText(1, action->iconText());
+            item->setText(2, mouseconfigs.contains(key) ? mouseconfigs[key].toString() : "");
+//            item->setSizeHint(0, QSize(240, 20));
+//            item->setSizeHint(1, QSize(300, 20));
+            ui->treeWidget->addTopLevelItem(item);
+            m_actionNameByIconText[action->iconText()] = key;
+        }
     }
-
 }
 
 MouseConfigDialog::~MouseConfigDialog()
@@ -88,7 +104,8 @@ void MouseConfigDialog::setEditTextWithoutSignal(QString text)
 void MouseConfigDialog::onTreeWidget_currentItemChanged(QTreeWidgetItem *item, QTreeWidgetItem *)
 {
     if(item) {
-        m_actionName = item->text(0);
+//        m_actionName = item->text(0);
+        m_actionName = m_actionNameByIconText[item->text(1)];
         ui->shortcutGroupBox->setEnabled(true);
         QString shortcut = item->text(2);
         ui->shortcutEdit->setText(shortcut);

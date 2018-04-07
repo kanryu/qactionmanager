@@ -47,6 +47,7 @@ private:
 //    QMap<QString, QMouseSequence> m_prevKeyConfigs;
     MouseActionManager m_mouseActions;
     bool m_ignoreEdited;
+    QMap<QString, QString> m_actionNameByIconText;
 };
 
 #endif // MOUSECONFIGDIALOG_H
