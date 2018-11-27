@@ -11,6 +11,13 @@ Each Action can have/set unique Keyboard/Mouse Sequence.
 
 It has default mapping, and can restore setting.
 
+Each shortcut can be serialized as a character string,
+It can be stored in the registry or ini file.
+
+![keyconfigcapture](https://user-images.githubusercontent.com/759165/49050142-53e49080-f225-11e8-81b1-b00b06345a59.png)
+
+![mouseconfigcapture](https://user-images.githubusercontent.com/759165/49050163-69f25100-f225-11e8-8a90-256e3a1eea5a.png)
+
 # 2. QMouseSequence
 
 A simple object provides to serialize mouse inputs like QKeySequence
