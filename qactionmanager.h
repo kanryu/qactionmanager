@@ -68,12 +68,26 @@ public:
     QMap<QString, Key>& keyMaps() { return m_keyByName; }
     Key getKey(const QString& name) { return m_keyByName.contains(name) ? m_keyByName[name] : Key(); }
     Key getKeyDefault(const QString& name) { return m_keyByNameDefaults.contains(name) ? m_keyByNameDefaults[name] : Key(); }
-    Action getActionByKey(Value& value) {
+    Action getActionByKey(Key& key) {
+        QString keystring = valueToString(key);
+        if(!m_nameByValue.contains(keystring))
+            return Action();
+        QString name = m_nameByValue[keystring];
+        return m_actionByName[name];
+    }
+    Action getActionByValue(Value& value) {
         QString keystring = valueToString(value);
         if(!m_nameByValue.contains(keystring))
             return Action();
         QString name = m_nameByValue[keystring];
         return m_actionByName[name];
+    }
+
+    QString getNameByKey(Key& key) {
+        QString keystring = valueToString(key);
+        if(!m_nameByValue.contains(keystring))
+            return "";
+        return m_nameByValue[keystring];
     }
 
     QString getNameByValue(Value& value) {
@@ -97,14 +111,19 @@ public:
         }
         return false;
     }
-    QString valueToString(int key)
+    // QString valueToString(QKeyCombination key)
+    // {
+    //     return QKeySequence(key).toString();
+    // }
+    // QString valueToString(Value value)
+    // {
+    //     return value.toString();
+    // }
+    QString valueToString(Key key)
     {
-        return Value(key).toString();
+        return key.toString();
     }
-    QString valueToString(Value value)
-    {
-        return value.toString();
-    }
+    QString valueToString(Value value);
 
     void updateKey(const QString& name, Key key, bool force=false) {
         if(!force && !m_actionByName.contains(name))

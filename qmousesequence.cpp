@@ -52,7 +52,7 @@ QString QMouseValue::toString()
 QMouseSequence::QMouseSequence(const QString seq)
 {
     QStringList seqs = seq.split(", ");
-    qSort(seqs);
+    std::sort(seqs.begin(), seqs.end());
     m_seq = seqs.join(", ");
     foreach(const QString& s, seqs) {
         m_values.append(QMouseValue(s));

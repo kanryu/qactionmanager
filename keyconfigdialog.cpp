@@ -55,7 +55,7 @@ static bool keySequenceIsValid(const QKeySequence &sequence)
     if (sequence.isEmpty())
         return true;
     for (int i = 0; i < sequence.count(); ++i) {
-        if (sequence[i] == Qt::Key_unknown)
+        if (sequence[i] == QKeySequence::UnknownKey)
             return false;
     }
     return true;

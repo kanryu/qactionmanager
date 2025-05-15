@@ -19,7 +19,7 @@ class KeyConfigDialog : public QDialog
 {
     Q_OBJECT
 public:
-    typedef QActionManager<QKeySequence, QKeySequence, QAction*> KeyActionManager;
+    typedef QActionManager<QKeySequence, QKeyCombination, QAction*> KeyActionManager;
 
     explicit KeyConfigDialog(KeyActionManager& keyActions, QWidget *parent);
     ~KeyConfigDialog();

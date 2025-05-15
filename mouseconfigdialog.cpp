@@ -140,7 +140,7 @@ void MouseConfigDialog::onAddSequenceButton_clicked()
     if(ui->checkBoxShift->isChecked()) keys |= Qt::ShiftModifier;
     if(ui->checkBoxMeta->isChecked()) keys |= Qt::MetaModifier;
 
-    Qt::MouseButtons buttons = 0;
+    Qt::MouseButtons buttons = Qt::MouseButton::NoButton;
     if(ui->checkBoxLeft->isChecked())     buttons |= Qt::LeftButton;
     if(ui->checkBoxRight->isChecked())    buttons |= Qt::RightButton;
     if(ui->checkBoxWheel->isChecked())    buttons |= Qt::MiddleButton;
