@@ -1,4 +1,7 @@
+#include <QtGui>
+
 #include "qactionmanager.h"
+#include "qmousesequence.h"
 
 template<typename Key, typename Value, typename Action>
 QString QActionManager<Key, Value, Action>::valueToString(Value value)
